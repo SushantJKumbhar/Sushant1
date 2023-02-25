@@ -1,0 +1,4 @@
+FROM ubuntu:18.04
+RUN apt-get update && apt install openjdk-11-jre-headless -y
+ADD apache-tomcat-9.0.72.zip /data/tomcat
+COPY hello-world-0.0.1-SNAPSHOT.war /data/tomcat/apache-tomcat-9.0.72
