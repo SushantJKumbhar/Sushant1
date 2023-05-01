@@ -1,0 +1,14 @@
+node{
+    stage("git checkout"){
+        checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: 'git-cred', url: 'https://github.com/SushantJKumbhar/Sushant1.git']])
+    }
+    stage("mvn install"){
+        def mavenHome = tool name: "Maven" , type: "maven"
+        sh "${mavenHome}/bin/mvn test"
+        sh "${mavenHome}/bin/mvn install"
+    }
+    stage("Upload to s3"){
+        s3Upload consoleLogLevel: 'INFO', dontSetBuildResultOnFailure: false, dontWaitForConcurrentBuildCompletion: false, entries: [[bucket: 'bucket27-4-2023', excludedFile: '', flatten: false, gzipFiles: false, keepForever: false, managedArtifacts: false, noUploadOnFailure: false, selectedRegion: 'us-east-1', showDirectlyInBrowser: false, sourceFile: '*/*.war', storageClass: 'STANDARD', uploadFromSlave: false, useServerSideEncryption: false]], pluginFailureResultConstraint: 'FAILURE', profileName: 'artifact-upload', userMetadata: []
+        
+    }
+}
