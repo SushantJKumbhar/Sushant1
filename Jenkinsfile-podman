@@ -1,0 +1,37 @@
+pipeline{
+    agent any
+    environment{
+        git_url = "https://github.com/SushantJKumbhar/Sushant1.git"
+        buildNumber = "BUILD_NUMBER"
+    }
+    stages{
+        stage("git clone"){
+            steps{
+                sh "rm -rf *"
+                sh "git clone ${git_url}"
+                
+            }
+        }
+        stage("podman build image"){
+            steps{
+                sh "cd Sushant1"
+                sh "podman build -t sushant2894/nginx -f /Sushant1/Containerfile ."
+                sh "podman image ls"
+            }
+        }
+        stage("docker login"){
+            steps{
+                sh "podman image ls"
+                withCredentials([string(credentialsId: 'Docker_Hub_Passwd', variable: 'Docker_hub_passwd')]) {
+                sh "podman login -u sushant2894 -p ${Docker_Hub_Passwd} docker.io" 
+                    
+                }
+            }
+        }
+        stage("docker push"){
+            steps{
+                sh "podman push sushant2894/nginx:BUILD_NUMBER"
+            }
+        }
+    }
+}                
