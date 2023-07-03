@@ -15,13 +15,13 @@ pipeline{
         stage("podman build image"){
             steps{
                 sh "cd Sushant1"
+                sh "podman image rm sushant2894/nginx:latest"
                 sh "podman build -t sushant2894/nginx -f /Sushant1/Containerfile ."
                 sh "podman image ls"
             }
         }
         stage("docker login"){
             steps{
-                sh "podman image ls"
                 withCredentials([string(credentialsId: 'Docker_Hub_Passwd', variable: 'Docker_hub_passwd')]) {
                 sh "podman login -u sushant2894 -p ${Docker_Hub_Passwd} docker.io" 
                     
@@ -30,7 +30,7 @@ pipeline{
         }
         stage("docker push"){
             steps{
-                sh "podman push sushant2894/nginx:BUILD_NUMBER"
+                sh "podman push sushant2894/nginx:latest"
             }
         }
     }
