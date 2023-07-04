@@ -1,21 +1,19 @@
 pipeline{
     agent any
     environment{
-        git_url = "https://github.com/SushantJKumbhar/Sushant1.git"
         buildNumber = "BUILD_NUMBER"
     }
     stages{
-        stage("git clone"){
+        stage("SCM Checkout"){
             steps{
                 sh "rm -rf *"
-                sh "git clone ${git_url}"
-                
+                git branch: 'main' , credentialsId: 'Git_Hub_Passwd', url: 'https://github.com/SushantJKumbhar/Sushant1.git'             
             }
         }
         stage("podman build image"){
             steps{
                 sh "cd Sushant1"
-                sh "podman image rm sushant2894/nginx:latest"
+                sh "podman image rm sushant2894/nginx:latest || true"
                 sh "podman build -t sushant2894/nginx -f /Sushant1/Containerfile ."
                 sh "podman image ls"
             }
